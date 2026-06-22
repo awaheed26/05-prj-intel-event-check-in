@@ -89,15 +89,27 @@ body {
 }
 
 /* Check-in form */
+
 .check-in {
   width: 100%;
+  max-width: 650px; /* Prevents stretching too wide */
   margin: 0 auto;
-  padding: 30px;
+  padding: 32px 24px; /* Balanced padding inside the card */
   background-color: #f8fafc;
   border-radius: 16px;
-  text-align: center;
+  box-sizing: border-box;
 }
-
+.check-in fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Comfortable space below the title legend */
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
 .form-group {
   display: flex;
   gap: 15px;
