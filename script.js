@@ -35,11 +35,22 @@ function checkIn(event) {
     }
 
     // 1. Greet Attendees on Check-In
-    if (greeting) {
-        greeting.textContent = `✅ Welcome ${name}! You have successfully checked in.`;
-        greeting.style.display = "block";
-        greeting.className = "success-message"; 
-    }
+let teamName = "";
+
+if (team === "water") {
+    teamName = "Team Water Wise";
+} else if (team === "zero") {
+    teamName = "Team Net Zero";
+} else if (team === "power") {
+    teamName = "Team Renewables";
+}
+
+if (greeting) {
+    greeting.textContent = `🎉 Welcome ${name}! Your check-in has been confirmed. You are now part of ${teamName}.`;
+    greeting.style.display = "block";
+    greeting.className = "success-message";
+}
+    
 
     // 2. Implement Attendance Counting
     totalAttendance++;
