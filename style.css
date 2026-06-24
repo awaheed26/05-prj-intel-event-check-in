@@ -266,7 +266,26 @@ button .fas {
   font-weight: 700;
   margin: 0 2px;
 }
+/* Celebration Message */
+#celebration {
+  font-weight: 600;
+  font-size: 17px;
+  padding: 18px 24px;
+  border-radius: 16px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  text-align: center;
+  border: 2px solid #bbf7d0;
+  background-color: #f0fdf4;
+  color: #166534; /* Rich sustainability green text */
+  box-shadow: 0 4px 14px rgba(22, 101, 52, 0.06);
+  transition: all 0.3s ease;
+}
 
+/* Automatically hide the box when it is empty so it leaves no empty blank space */
+#celebration:empty {
+  display: none;
+}
 /* Footer */
 
 footer {
@@ -365,7 +384,46 @@ select {
   font-weight: 500;
   color: #475569;
 }
+/* Attendee List */
+.attendee-list-section {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 2px solid #f1f5f9;
+}
 
+.attendee-list-section h3 {
+  color: #64748b;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+#attendeeList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#attendeeList li {
+  background: #f8fafc;
+  border-left: 4px solid #0071c5;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  color: #334155;
+  transition: all 0.3s ease;
+}
+
+#attendeeList li:hover {
+  background: #e8f4fc;
+  transform: translateX(3px);
+}
+
+#attendeeList li:last-child {
+  margin-bottom: 0;
+}
 @media (max-width: 768px) {
 
   .hero {
@@ -418,4 +476,19 @@ select {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+  .attendee-list-section {
+  margin-top: 25px;
+  padding-top: 25px;
+}
+
+#attendeeList li {
+  font-size: 14px;
+  padding: 12px 14px;
+}
+#celebration {
+    font-size: 15px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
 }

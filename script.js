@@ -1,3 +1,4 @@
+// 1. Global State Variables
 let totalAttendance = 0;
 let waterWiseCount = 0;
 let netZeroCount = 0;
@@ -5,23 +6,21 @@ let renewablesCount = 0;
 const attendanceGoal = 50;
 let attendees = [];
 
-// Select DOM elements safely
+// 2. Select DOM Elements safely
 const nameInput = document.getElementById("attendeeName");
 const teamSelect = document.getElementById("teamSelect");
 const greeting = document.getElementById("greeting");
 const totalCount = document.getElementById("attendeeCount");
-
 const waterWiseDisplay = document.getElementById("waterCount");
 const netZeroDisplay = document.getElementById("zeroCount");
 const renewablesDisplay = document.getElementById("powerCount");
 const progressBar = document.getElementById("progressBar");
-
-// Elements that might be missing in the base HTML layout
 const attendeeList = document.getElementById("attendeeList");
 const celebration = document.getElementById("celebration");
+const checkInForm = document.getElementById("checkInForm");
 
+// 3. Check-In Function
 function checkIn(event) {
-    // Stop the page from refreshing automatically
     event.preventDefault();
 
     if (!nameInput || !teamSelect) return;
@@ -34,74 +33,88 @@ function checkIn(event) {
         return;
     }
 
-    // 1. Greet Attendees on Check-In
-let teamName = "";
+    // greeting
+    let teamName = "";
+    if (team === "water") teamName = "Team Water Wise";
+    else if (team === "zero") teamName = "Team Net Zero";
+    else if (team === "power") teamName = "Team Renewables";
 
-if (team === "water") {
-    teamName = "Team Water Wise";
-} else if (team === "zero") {
-    teamName = "Team Net Zero";
-} else if (team === "power") {
-    teamName = "Team Renewables";
-}
-
-if (greeting) {
-    greeting.textContent = `🎉 Welcome ${name}! Your check-in has been confirmed. You are now part of ${teamName}.`;
-    greeting.style.display = "block";
-    greeting.className = "success-message";
-}
-    
-
-    // 2. Implement Attendance Counting
-    totalAttendance++;
-    if (totalCount) totalCount.textContent = totalAttendance;
-
-    // 3. Team Attendance Tracker
-    if (team === "water") {
-        waterWiseCount++;
-        if (waterWiseDisplay) waterWiseDisplay.textContent = waterWiseCount;
-    } else if (team === "zero") {
-        netZeroCount++;
-        if (netZeroDisplay) netZeroDisplay.textContent = netZeroCount;
-    } else if (team === "power") {
-        renewablesCount++;
-        if (renewablesDisplay) renewablesDisplay.textContent = renewablesCount;
+    if (greeting) {
+        greeting.textContent =
+            `🎉 Welcome ${name}! Your check-in has been confirmed. You are now part of ${teamName}.`;
+        greeting.style.display = "block";
+        greeting.className = "success-message";
     }
 
-    // Save individual attendee records
-    attendees.push({ name, team });
+    // check if attendee exists
+    const existingAttendee = attendees.find(
+        attendee => attendee.name.toLowerCase() === name.toLowerCase()
+    );
 
-    // 4. Update Progress Bar, Array Displays, and Storage
+    if (existingAttendee) {
+        // remove old team count
+        if (existingAttendee.team === "water") waterWiseCount--;
+        else if (existingAttendee.team === "zero") netZeroCount--;
+        else if (existingAttendee.team === "power") renewablesCount--;
+
+        // update team
+        existingAttendee.team = team;
+    } else {
+        attendees.push({ name, team });
+        totalAttendance++;
+    }
+
+    // add new team count
+    if (team === "water") waterWiseCount++;
+    else if (team === "zero") netZeroCount++;
+    else if (team === "power") renewablesCount++;
+
+    // update UI text fields directly
+    if (totalCount) totalCount.textContent = totalAttendance;
+    if (waterWiseDisplay) waterWiseDisplay.textContent = waterWiseCount;
+    if (netZeroDisplay) netZeroDisplay.textContent = netZeroCount;
+    if (renewablesDisplay) renewablesDisplay.textContent = renewablesCount;
+
+    // run UI layouts and storage
     updateProgress();
     displayAttendees();
     saveCounts();
     checkWinner();
 
-    // Reset input fields cleanly
+    // reset form
     nameInput.value = "";
     teamSelect.selectedIndex = 0;
 }
 
-function updateProgress() {
-    let percent = (totalAttendance / attendanceGoal) * 100;
-    if (percent > 100) percent = 100;
-
-    if (progressBar) {
-        progressBar.style.width = percent + "%";
-    }
-}
-
+// 4. Display Attendees List
 function displayAttendees() {
-    if (!attendeeList) return; 
+    if (!attendeeList) return;
+
     attendeeList.innerHTML = "";
 
     attendees.forEach(person => {
         const item = document.createElement("li");
-        item.textContent = `${person.name} - ${person.team}`;
+
+        let teamName = "";
+        if (person.team === "water") teamName = "Team Water Wise";
+        else if (person.team === "zero") teamName = "Team Net Zero";
+        else if (person.team === "power") teamName = "Team Renewables";
+
+        item.textContent = `${person.name} - ${teamName}`;
         attendeeList.appendChild(item);
     });
 }
 
+// 5. Progress Bar Fix (Added fallback so it doesn't break the code)
+function updateProgress() {
+    if (!progressBar) return;
+    
+    // Calculate percentage based on goal
+    const percentage = Math.min((totalAttendance / attendanceGoal) * 100, 100);
+    progressBar.style.width = `${percentage}%`;
+}
+
+// 6. Check for Goal Winner
 function checkWinner() {
     if (!celebration) return; 
 
@@ -119,9 +132,12 @@ function checkWinner() {
         }
 
         celebration.textContent = `🎉 Attendance goal reached! ${winningTeam} is leading with ${highest} attendees!`;
+    } else {
+        celebration.textContent = ""; // Clear if goal isn't met yet
     }
 }
 
+// 7. LocalStorage Save and Load
 function saveCounts() {
     localStorage.setItem("totalAttendance", totalAttendance);
     localStorage.setItem("waterWiseCount", waterWiseCount);
@@ -146,11 +162,10 @@ function loadCounts() {
     displayAttendees();
 }
 
-// CRITICAL FIX: Explicitly mount the listener to the form element
-const checkInForm = document.getElementById("checkInForm");
+// 8. Initialization / Event Listeners
+// ALWAYS load counts on startup so refresh data works
+loadCounts();
+
 if (checkInForm) {
     checkInForm.addEventListener("submit", checkIn);
 }
-
-// Execute initial local storage readout
-loadCounts();
